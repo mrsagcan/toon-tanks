@@ -21,6 +21,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera Components")
@@ -37,4 +41,10 @@ private:
 
 	void Move(float Value);
 	void Turn(float Value);
+
+	APlayerController* PlayerControllerRef;
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 };
