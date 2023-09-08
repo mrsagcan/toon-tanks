@@ -18,8 +18,8 @@ AProjectile::AProjectile()
 	ProjectileMovementComp->InitialSpeed = 10000.f;
 	ProjectileMovementComp->MaxSpeed = 11000.f;
 
-	ParticleSystemComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Smoke Trail"));
-	ParticleSystemComp->SetupAttachment(RootComponent);
+	SmokeTrailParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Smoke Trail"));
+	SmokeTrailParticles->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -27,8 +27,12 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
+
+	if (LaunchSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
 }
 
 // Called every frame
@@ -60,7 +64,11 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 				HitParticles,
 				GetActorLocation(),
 				GetActorRotation()
-			);	
+			);
+		}
+		if (HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 		}
 	}
 	Destroy();
